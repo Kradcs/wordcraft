@@ -33,3 +33,18 @@ shortcut/menu behaviour, cancellation, rollback or uninstall. Those still requir
 payload in an authorised clean Windows test environment. Cross-architecture metadata is not
 execution evidence on those architectures. Existing open installer/association PRs must be
 reconciled before publication. Nothing here changes macOS/Linux native packaging conventions.
+
+## Portable Portuguese proofing
+
+The portable ZIP includes the Brazilian Portuguese Language pack from craft-i18n
+`language-packs-2`, verified against its pinned SHA-256 before extraction. Extract
+the whole ZIP and open `WordCraft-Portugues.cmd`; it sets `WORDCRAFT_DICTIONARIES`
+only for that process, using the adjacent `dictionaries` directory. Select
+Português (Brasil) as the document's proofing language. The upstream dictionary
+and hyphenation licences are shipped in `dictionaries/LICENCES`.
+
+With Replace text as you type enabled, an unrecognized Portuguese word is replaced
+by the dictionary's best suggestion at a space, punctuation or Enter. Undo
+restores the typed spelling. Disable that option to keep misspellings underlined
+for manual review. The MSI continues to use installed Language packs or the
+user's dictionaries folder.

@@ -8636,7 +8636,7 @@ fn portuguese_test_dictionary() {
 
 const PORTUGUESE_TEST_AFF: &str =
     "SET UTF-8\nFLAG UTF-8\nFORBIDDENWORD F\nTRY aeiousrntmdlcpvgqbzfhjxçãõáéíóúâêô\nMAP 2\nMAP aáã\nMAP eé\nREP 1\nREP seje seja\n";
-const PORTUGUESE_TEST_DIC: &str = "11\nsaudade\ncoração\ne\nele\ndisse\nnão\né\nque\nseja\nfrequencia/F\nmuito\n";
+const PORTUGUESE_TEST_DIC: &str = "12\nconfiguração\nsaudade\ncoração\ne\nele\ndisse\nnão\né\nque\nseja\nfrequencia/F\nmuito\n";
 
 /// #1063: File › Options › Proofing › Dictionaries folder. A folder of Hunspell files is saved,
 /// searched first and reported per language; a missing folder or a relative path is refused and

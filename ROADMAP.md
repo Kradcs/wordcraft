@@ -1111,3 +1111,6 @@ Footer page-table height and body wrapping are corrected. Other pagination gaps 
 | 2026-10-27 | trivial | Progress log: AutoCorrect Options with no document open (#4585) |
 | 2026-10-28 | trivial | Progress log: RTF metafile pictures are imported (#4259) |
 | 2026-10-28 | trivial | Progress log: Chinese and Japanese text counts a word per character (#4547) |
+
+
+Portuguese proofing correction (2026-11-03): when a Portuguese dictionary is installed, typing a word boundary applies its best spelling suggestion to an unrecognized Portuguese word (up to 32 letters). Existing replacements take precedence; valid words, excluded replacements and text marked Do not check spelling stay unchanged. Replace text as you type disables this behavior; Undo restores the original spelling. Portuguese spelling marks require the Portuguese Language pack or a Hunspell dictionary; a translated interface alone does not install it.

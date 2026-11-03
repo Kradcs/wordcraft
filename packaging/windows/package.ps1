@@ -179,6 +179,29 @@ if ($env:CRAFT_FONTS_DIR) {
     Copy-Item $ofl.FullName (Join-Path $Portable "OFL-$($ofl.Directory.Name).txt")
   }
 }
+# Ship the Portuguese proofing data with the portable edition. A translated UI
+# alone cannot underline misspellings without this dictionary. Keep the upstream
+# licence files and verify the exact release archive before extracting it.
+$PortugueseArchive = Join-Path $TargetDir 'windows-package\pt-br.tar.zst'
+Invoke-WebRequest -Uri 'https://github.com/storytold/craft-i18n/releases/download/language-packs-2/pt-br.tar.zst' -OutFile $PortugueseArchive
+$PortugueseHash = (Get-FileHash -LiteralPath $PortugueseArchive -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($PortugueseHash -ne '14ce880350496c624ff277d7b855d43bb4fc90cf1b827249d09bfec16a6d7cab') {
+  throw 'Portuguese dictionary checksum mismatch'
+}
+$Portuguese = Join-Path $Portable 'dictionaries'
+New-Item -ItemType Directory -Force -Path $Portuguese | Out-Null
+Invoke-Native 'Extract verified Portuguese dictionary' { tar -xf $PortugueseArchive -C $Portuguese }
+Move-Item -LiteralPath (Join-Path $Portuguese 'spelling.aff') -Destination (Join-Path $Portuguese 'pt_BR.aff')
+Move-Item -LiteralPath (Join-Path $Portuguese 'spelling.dic') -Destination (Join-Path $Portuguese 'pt_BR.dic')
+# Use this portable dictionary without overwriting a person's installed dictionaries.
+@'
+@echo off
+setlocal
+set "WORDCRAFT_DICTIONARIES=%~dp0dictionaries"
+start "" "%~dp0wordcraft.exe" %*
+'@ | Set-Content -LiteralPath (Join-Path $Portable 'WordCraft-Portugues.cmd') -Encoding ascii
+'Extraia todo o ZIP e abra WordCraft-Portugues.cmd. Selecione Portugues (Brasil) como idioma de revisao. O dicionario e suas licencas estao em dictionaries.' |
+  Set-Content -LiteralPath (Join-Path $Portable 'LEIA-ME-Portugues.txt') -Encoding ascii
 $Zip = Join-Path $Dist "wordcraft-$Version-windows-$Arch-portable.zip"
 Remove-Item -Force $Zip -ErrorAction SilentlyContinue
 Compress-Archive -Path $Portable -DestinationPath $Zip

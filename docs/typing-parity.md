@@ -617,3 +617,5 @@ this correction; native Windows interaction and Microsoft Word remain untested.
 | 2026-10-15 | trivial | Text direction: typed and inserted text takes its direction from its own letters, not the caret's run; spaces typed into reopened Hebrew draw in the Latin font until reopened (#1543) |
 
 | 2026-10-27 | trivial | Backspace after a floating shape's anchor at a paragraph start joins paragraphs and keeps the shape (#4592) |
+
+Portuguese proofing correction (2026-11-03): when a Portuguese dictionary is installed, typing a word boundary applies its best spelling suggestion to an unrecognized Portuguese word (up to 32 letters). Existing replacements take precedence; valid words, excluded replacements and text marked Do not check spelling stay unchanged. Replace text as you type disables this behavior; Undo restores the original spelling. Portuguese spelling marks require the Portuguese Language pack or a Hunspell dictionary; a translated interface alone does not install it.

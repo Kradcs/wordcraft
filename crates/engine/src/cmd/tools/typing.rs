@@ -84,7 +84,27 @@ pub fn autocorrect_word(s: &mut Session, on_enter: bool) -> Result<(), CmdError>
     // A whole-word replacement, else "wait..." → "wait…". Proofing decides what is English the
     // same way (#835); every English (en-GB, en-CA…) counts (#1281).
     let english = s.doc.para_at(&f).is_none_or(|_| wordcraft_proof::ProofLang::from_tag(lang.as_deref()).is_english());
-    let found = if ac.replace_text { ac.replacement_in(&word, english) } else { None };
+    let found = if ac.replace_text {
+        ac.replacement_in(&word, english).or_else(|| {
+            // Portuguese dictionaries rank missing accents and nearby spellings first.
+            // Keep valid words, explicit exclusions and non-word tokens untouched; bound
+            // lookup work on input from typing or automation.
+            let proof_lang = wordcraft_proof::ProofLang::from_tag(lang.as_deref());
+            let no_proof = s.doc.para_at(&f).is_some_and(|p| s.doc.styles.resolve_char(p.props.style.as_deref(), p.props_of_char(start)).no_proof);
+            if proof_lang != wordcraft_proof::ProofLang::Pt
+                || no_proof
+                || word.chars().count() > 32
+                || !word.chars().all(char::is_alphabetic)
+                || ac.removed.iter().any(|entry| entry == &word)
+                || wordcraft_proof::is_correct_in(&word, proof_lang)
+            {
+                return None;
+            }
+            wordcraft_proof::suggest_in(&word, 1, proof_lang).into_iter().next()
+        })
+    } else {
+        None
+    };
     let (from, rep) = match found {
         Some(r) => (start, Some(r)),
         None if ac.replace_text && word.len() > 3 && word.ends_with("...") => (start + word.len() - 3, Some("…".to_string())),

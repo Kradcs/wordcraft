@@ -392,3 +392,6 @@ Table rows and cells inside `mc:AlternateContent` use the same selected-branch p
 ## Layout validation fonts
 
 Four geometry-dependent regression controls request Source Sans 3 explicitly. Platform-installed substitutes otherwise change their expected line counts. Assertions remain unchanged; renderer font metrics and substitution gaps remain open.
+
+
+Portuguese proofing correction (2026-11-03): when a Portuguese dictionary is installed, typing a word boundary applies its best spelling suggestion to an unrecognized Portuguese word (up to 32 letters). Existing replacements take precedence; valid words, excluded replacements and text marked Do not check spelling stay unchanged. Replace text as you type disables this behavior; Undo restores the original spelling. Portuguese spelling marks require the Portuguese Language pack or a Hunspell dictionary; a translated interface alone does not install it.

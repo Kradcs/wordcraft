@@ -3710,3 +3710,24 @@ fn issues_1281_1045_english_dialects_proof_typed_text() {
     let words: Vec<&str> = issues.as_array().unwrap().iter().filter(|i| i["kind"] == "spelling").filter_map(|i| i["text"].as_str()).collect();
     assert_eq!(words, ["21th"]);
 }
+
+#[test]
+fn portuguese_dictionary_autocorrection_respects_options_and_undo() {
+    super::portuguese_test_dictionary();
+    let mut session = s();
+    session.set_editing_language(Some("pt-BR"));
+    session.prefs.autocorrect.cap_sentences = false;
+    typ(&mut session, "configuracao ");
+    assert_eq!(paras(&session)[0].0, "configuração ");
+    run(&mut session, "edit.undo", json!({}));
+    assert_eq!(paras(&session)[0].0, "configuracao ");
+
+    let mut disabled = s();
+    disabled.set_editing_language(Some("pt-BR"));
+    disabled.prefs.autocorrect.cap_sentences = false;
+    disabled.prefs.autocorrect.replace_text = false;
+    typ(&mut disabled, "configuracao ");
+    assert_eq!(paras(&disabled)[0].0, "configuracao ");
+    let issues = disabled.run("review.issues", &json!({})).unwrap();
+    assert!(issues.as_array().unwrap().iter().any(|issue| issue["text"] == "configuracao" && issue["kind"] == "spelling"));
+}
